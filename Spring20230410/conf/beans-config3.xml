@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:c="http://www.springframework.org/schema/c"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	
+	<!-- 引用外部資源 -->
+	<context:property-placeholder location="data.properties" />
+	
+	<!-- 透過外部資源注入資料 -->
+	<bean id="clazz1"
+		  p:id="1"
+		  p:name="${clazz.name1}" 
+		  p:credit="${clazz.credit1}"
+		  class="com.spring.core.session03.bean.Clazz" />
+	
+	<bean id="clazz2"
+		  p:id="2"
+		  p:name="${clazz.name2}" 
+		  p:credit="${clazz.credit2}"
+		  class="com.spring.core.session03.bean.Clazz" />
+	
+	<bean id="clazz3"
+		  p:id="3"
+		  p:name="${clazz.name3}" 
+		  p:credit="${clazz.credit3}"
+		  class="com.spring.core.session03.bean.Clazz" />
+	
+	<!-- 學生 1 配置 -->
+	<bean id="student1" p:id="1" p:name="John" class="com.spring.core.session03.bean.Student">
+		<!-- Set 集合配置 -->
+		<property name="clazzs">
+			<set>
+				<ref bean="clazz1" />
+				<ref bean="clazz2" />
+				<ref bean="clazz3" />
+			</set>
+		</property>
+	</bean>
+	<!-- 學生 2 配置 -->
+	<bean id="student2" p:id="2" p:name="Mary" class="com.spring.core.session03.bean.Student">
+		<!-- Set 集合配置 -->
+		<property name="clazzs">
+			<set>
+				<ref bean="clazz1" />
+				<ref bean="clazz3" />
+			</set>
+		</property>
+	</bean>
+	
+	<!-- 講師 1 配置 -->
+	<bean id="teacher1" p:id="1" p:name="Bob" class="com.spring.core.session03.bean.Teacher">
+		<!-- Set 集合配置 -->
+		<property name="students">
+			<set>
+				<ref bean="student1" />
+				<ref bean="student2" />
+			</set>
+		</property>
+		<!-- List 集合配置 -->
+		<property name="clazzs">
+			<list>
+				<ref bean="clazz1" />
+				<ref bean="clazz3" />
+			</list>
+		</property>
+		<!-- Map 集合配置（每一個元素是一個 entry -> key / value） -->
+		<property name="salary">
+			<map>
+				<entry key="base">
+					<value>50000</value>
+				</entry>
+				<entry key="addition">
+					<value>20000</value>
+				</entry>
+			</map>
+		</property>
+		
+	</bean>
+	
+	
+	<!-- 簡化集合配置 -->
+	<util:set id="students">
+		<ref bean="student1" />
+		<ref bean="student2" />
+	</util:set>
+	
+	<util:list id="clazzs">
+		<ref bean="clazz1" />
+		<ref bean="clazz2" />
+		<ref bean="clazz3" />
+	</util:list>
+	
+	<util:map id="salary">
+		<entry>
+			<key>
+				<value>base</value>
+			</key>
+			<value>65000</value>
+		</entry>
+		<entry>
+			<key>
+				<value>addition</value>
+			</key>
+			<value>25000</value>
+		</entry>
+	</util:map>
+	
+	<!-- 講師 2 配置 -->
+	<bean id="teacher2" 
+		  p:id="2"
+		  p:name="Jean"
+		  p:students-ref="students"
+		  p:clazzs-ref="clazzs"
+		  p:salary-ref="salary"
+		  class="com.spring.core.session03.bean.Teacher" />
+		  
+	<!-- init-method 與 destroy-method 配置 -->
+	<bean id="dbconn" 
+		  init-method="init"
+		  destroy-method="destory"
+		  class="com.spring.core.session03.bean.DBConn" />
+	
+	<!-- CarFactory 工廠建立 -->
+	<bean id="carFactory" scope="prototype" class="com.spring.core.session03.bean.CarFactory" />
+</beans>
+
+
+
+
